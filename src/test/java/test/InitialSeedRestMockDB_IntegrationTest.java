@@ -1,5 +1,6 @@
 package test;
 
+import entity.PU;
 import org.junit.BeforeClass;
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.*;
@@ -10,23 +11,30 @@ import javax.servlet.ServletException;
 import org.apache.catalina.LifecycleException;
 import static org.hamcrest.Matchers.*;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import test.utils.EmbeddedTomcat;
 
-public class InitialSeedRestIntegrationTest {
+public class InitialSeedRestMockDB_IntegrationTest {
 
   private static final int SERVER_PORT = 9999;
   private static final String APP_CONTEXT = "/seed";
   private static EmbeddedTomcat tomcat;
 
-  public InitialSeedRestIntegrationTest() {
+  public InitialSeedRestMockDB_IntegrationTest() {
   }
   private static String securityToken;
 
+  //Override in a derived test-class to repeat the tests with an alternative database
+  public void setupUsersInDB() {
+    PU.setPU_Name("pu_memorydb_mock");
+    utils.makeTestUsers.main(null);
+  }
+
   //Utility method to login and set the securityToken
   private static void login(String role, String password) {
-    String json = String.format("{username: \"%s\", password: \"%s\"}",role,password);
+    String json = String.format("{username: \"%s\", password: \"%s\"}", role, password);
     System.out.println(json);
     securityToken = given()
             .contentType("application/json")
@@ -37,8 +45,8 @@ public class InitialSeedRestIntegrationTest {
     System.out.println("Token: " + securityToken);
 
   }
- 
-  private void logOut(){
+
+  private void logOut() {
     securityToken = null;
   }
 
@@ -57,6 +65,11 @@ public class InitialSeedRestIntegrationTest {
     tomcat.stop();
   }
 
+  @Before
+  public void setup() {
+    setupUsersInDB();
+  }
+
   @Test
   public void testRestNoAuthenticationRequired() {
     given()
@@ -69,7 +82,7 @@ public class InitialSeedRestIntegrationTest {
 
   @Test
   public void tesRestForAdmin() {
-    login("admin","test");
+    login("admin", "test");
     given()
             .contentType("application/json")
             .header("Authorization", "Bearer " + securityToken)
@@ -77,12 +90,12 @@ public class InitialSeedRestIntegrationTest {
             .get("/api/demoadmin").then()
             .statusCode(200)
             .body("message", equalTo("Hello Admin from server (call accesible by only authenticated ADMINS)"))
-            .body("serverTime",notNullValue());
+            .body("serverTime", notNullValue());
   }
 
   @Test
   public void testRestForUser() {
-    login("user","test");
+    login("user", "test");
     given()
             .contentType("application/json")
             .header("Authorization", "Bearer " + securityToken)
@@ -91,7 +104,7 @@ public class InitialSeedRestIntegrationTest {
             .statusCode(200)
             .body("message", equalTo("Hello User from Server (Accesible by only authenticated USERS)"));
   }
-  
+
   @Test
   public void userNotAuthenticated() {
     logOut();
@@ -102,7 +115,7 @@ public class InitialSeedRestIntegrationTest {
             .statusCode(401)
             .body("error.message", equalTo("No authorization header provided"));
   }
-  
+
   @Test
   public void adminNotAuthenticated() {
     logOut();

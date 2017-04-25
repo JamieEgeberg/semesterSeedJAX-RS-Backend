@@ -17,6 +17,7 @@ and open the template in the editor.
 
       <p>This is a backend for this matching
         <a href="https://github.com/Lars-m/semesterSeedReactClient.git">React Front End</a></p>
+      <br/>
       <h4>This Backend provides, out of the box:</h4>
       <ul>
         <li>Token Based Authentication</li>
@@ -26,10 +27,23 @@ and open the template in the editor.
             <li>Admin</li>
           </ul>
         </li>
-        <li>It user an in-memory database, to let you run the server right after cloning.<br/> You must change this to point to 
-          <b>your own MySQL instance, either locally or remote</b></li>
-        <li>Built in filters to allow CORS</li>
-        <li style="color:red">It stores passwords in <b>PLAIN-TEXT</b>, you must <b>FIX THAT</b> </li>
+        <li>It uses an <em>in-memory database</em>, for <em>Integration/Unit-tests</em> that requires a database, so you can run tests right after cloning.<br/> 
+          <p>It ships with a <b>persistence.xml</b> file that contains <span style="text-decoration: underline;">three persistence units</span> as outlined below:</p>
+          <ul>
+            <li>
+              <b>pu_development: </b> You MUST change this to point to your own local MySQL database, before you run the project with the front-end. 
+                 Run the file <code>utils.makeTestUsers</code> before you execute the project to set up the test users.
+            </li>
+            <li>
+              <b>pu_memorydb_mock: </b> This is the persistenc unit used by the default tests. It uses an in-memory Derby database.
+            </li>
+            <li>
+              <b>pu_mySql_travis_Integration: </b> This is a persistenc unit meant for REAL integration tests (that is using the right database) on Travis
+              <br/><br/>
+            </li>
+          </ul>
+        </li>
+        <li>Built in filters to allow for  b CORS</li>
       </ul>
       <br/>
       <br/>
