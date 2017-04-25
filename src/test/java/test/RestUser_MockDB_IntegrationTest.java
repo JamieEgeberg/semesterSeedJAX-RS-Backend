@@ -16,13 +16,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 import test.utils.EmbeddedTomcat;
 
-public class InitialSeedRestMockDB_IntegrationTest {
+public class RestUser_MockDB_IntegrationTest {
 
   private static final int SERVER_PORT = 9999;
   private static final String APP_CONTEXT = "/seed";
   private static EmbeddedTomcat tomcat;
 
-  public InitialSeedRestMockDB_IntegrationTest() {
+  public RestUser_MockDB_IntegrationTest() {
   }
   private static String securityToken;
 
