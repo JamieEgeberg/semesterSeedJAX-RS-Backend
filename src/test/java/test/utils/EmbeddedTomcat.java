@@ -19,13 +19,9 @@ import org.glassfish.jersey.servlet.ServletContainer;
 public class EmbeddedTomcat {
 
   private final static String TMP_DIR = System.getProperty("java.io.tmpdir")+"/EmbeddedTomcat";
-  //private static final int PORT = 9999;
   
   Tomcat tomcat;
 
-//  public static void main(String[] args) throws Exception {
-//    new EmbeddedTomcat().start();
-//  }
 
   public void start(int port,String appContext) throws ServletException,
           MalformedURLException,
@@ -36,7 +32,6 @@ public class EmbeddedTomcat {
 
     new File("WebContent").mkdir();
 
-    // new java.io.File("tmp").mkdir();
     tomcat.setBaseDir(TMP_DIR);
     tomcat.setPort(port);
 
@@ -46,11 +41,7 @@ public class EmbeddedTomcat {
     Tomcat.addServlet(context, "jersey-container-servlet", resourceConfig());
     context.addServletMapping("/api/*", "jersey-container-servlet");
     tomcat.start();
-    Server server = tomcat.getServer();
-    System.out.println("Address: "+server.getAddress());
-    for(Service s : server.findServices()){
-      System.out.println("Service: "+s.getDomain()+" -- "+s.getName());
-    }
+    
     //Don't comment the line below in unless you know what you do. It will block here, waiting for the server to stop. 
     //This can be usefull for testing the embedded server from a browser or postman
     //tomcat.getServer().await();
@@ -59,7 +50,7 @@ public class EmbeddedTomcat {
   private ServletContainer resourceConfig() {
     //Load the Wizard-generated rest.ApplicationConfig - class
     Set<Class<?>> resources = new rest.ApplicationConfig().getClasses();
-    System.out.println("Loaded Classes Count: "+resources.size());
+    //System.out.println("Loaded Classes Count: "+resources.size());
     return new ServletContainer(new ResourceConfig(resources));
     //return new ServletContainer(new ResourceConfig(new rest.ApplicationConfig().getClasses()));
   }

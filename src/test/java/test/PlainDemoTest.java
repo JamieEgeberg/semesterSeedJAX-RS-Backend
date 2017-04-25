@@ -9,9 +9,9 @@ import static org.junit.Assert.*;
  *
  * @author lam
  */
-public class plainDemoTest {
+public class PlainDemoTest {
   
-  public plainDemoTest() {
+  public PlainDemoTest() {
   }
   
   @BeforeClass

@@ -35,14 +35,14 @@ public class InitialSeedRestMockDB_IntegrationTest {
   //Utility method to login and set the securityToken
   private static void login(String role, String password) {
     String json = String.format("{username: \"%s\", password: \"%s\"}", role, password);
-    System.out.println(json);
+    //System.out.println(json);
     securityToken = given()
             .contentType("application/json")
             .body(json)
             .when().post("/api/login")
             .then()
             .extract().path("token");
-    System.out.println("Token: " + securityToken);
+    //System.out.println("Token: " + securityToken);
 
   }
 
