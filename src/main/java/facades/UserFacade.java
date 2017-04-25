@@ -38,6 +38,9 @@ public class UserFacade implements IUserFacade {
   @Override
   public List<String> authenticateUser(String userName, String password) {
     IUser user = getUserByUserId(userName);
+    if(user == null){
+      return null;
+    }
     boolean passwordOK = false;
     try {
       passwordOK = PasswordStorage.verifyPassword(password, user.getPassword());
@@ -45,6 +48,24 @@ public class UserFacade implements IUserFacade {
       Logger.getLogger(UserFacade.class.getName()).log(Level.SEVERE, null, ex);
     }
     return user != null && passwordOK ? user.getRolesAsStrings() : null;
+  }
+
+  @Override
+  public IUser addUser(String userName, String password) {
+    EntityManager em = getEntityManager();
+    try {
+      User user = new User(userName,password);
+      em.getTransaction().begin();
+      em.persist(user);
+      em.getTransaction().commit();
+      return user;
+      
+    } catch (PasswordStorage.CannotPerformOperationException ex) {
+      Logger.getLogger(UserFacade.class.getName()).log(Level.SEVERE, null, ex);
+      return null;
+    } finally{
+      em.close();
+    }
   }
 
 }
